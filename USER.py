@@ -18,3 +18,10 @@ class User(SQLclass):
     appointments = relationship(
         argument="Appointment", back_populates="user")
 
+    @classmethod
+    def login(cls, username: str, password: str, session) -> Self | None:
+        if (user := session.get(User, username)) == None:
+            return
+        if (user.password != password):
+            return
+        return user
