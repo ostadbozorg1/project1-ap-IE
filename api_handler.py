@@ -16,8 +16,8 @@ def get_reservation_amount(id: str) -> int:
     return _get_slots()[id]
 
 
-def set_reservation_amount(id: str, amount: int):
-    return _reserve(id=id, amount=_get_slots()[id]-amount)
+def add_reservation_amount(id: str, amount: int):
+    return _reserve(id=id, amount=-amount)
 
 
 def make_reservation(id: str):

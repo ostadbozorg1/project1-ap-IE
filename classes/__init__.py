@@ -1,3 +1,4 @@
+from sqlalchemy.orm import Relationship
 from .appointment import Appointment
 from .clinic import Clinic
 from .manager import Manager

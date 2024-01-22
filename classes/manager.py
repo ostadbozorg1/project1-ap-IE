@@ -1,5 +1,5 @@
-from sqlalchemy import Column, ForeignKey, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import relationship, mapped_column, Mapped, Relationship
 
 from .user import User
 
@@ -7,12 +7,15 @@ from .user import User
 class Manager(User):
     __tablename__ = "managers"
 
-    username = Column(String, ForeignKey(
-        column="uesrs.username"), primary_key=True)
-    clinic_id = Column(String, ForeignKey(column="clinics.id"))
+    user_username: Mapped[str] = mapped_column(String, ForeignKey(
+        column="users.username"), primary_key=True)
+    clinic_id: Mapped[str] = mapped_column(
+        String, ForeignKey(column="clinics.id"))
 
-    user = relationship(argument="User", back_populates="manager")
-    clinic = relationship(argument="Clinic", back_populates="managers")
+    user: Relationship = relationship(
+        argument="User", back_populates="manager")
+    clinic: Relationship = relationship(
+        argument="Clinic", back_populates="managers")
 
     __mapper_args__ = {
         "polymorphic_identity": "manager",
