@@ -12,7 +12,7 @@ class Clinic(SQLclass):
     services: Mapped[str] = mapped_column(String)
     is_available: Mapped[str] = mapped_column(Boolean)
 
-    appointments: Relationship = relationship(
+    appointments = relationship(
         argument="Appointment", back_populates="clinic")
-    managers: Relationship = relationship(
+    managers = relationship(
         argument="Manager", back_populates="clinic")

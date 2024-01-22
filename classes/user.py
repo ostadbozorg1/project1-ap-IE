@@ -1,3 +1,4 @@
+from typing import Self
 from sqlalchemy import String
 from sqlalchemy.orm import relationship, mapped_column, Mapped, Relationship
 from .base import SQLclass
@@ -10,9 +11,17 @@ class User(SQLclass):
     name: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(String, nullable=False, unique=True)
 
-    patient: Relationship = relationship(
+    patient = relationship(
         argument="Patient", back_populates="user")
-    manager: Relationship = relationship(
+    manager = relationship(
         argument="Manager", back_populates="user")
-    appointments: Relationship = relationship(
-        argument="Appointment", back_populates="user_id")
+    appointments = relationship(
+        argument="Appointment", back_populates="user")
+
+    @classmethod
+    def login(cls, username: str, password: str, session) -> Self | None:
+        if (user := session.get(User, username)) == None:
+            return
+        if (user.password != password):
+            return
+        return user
