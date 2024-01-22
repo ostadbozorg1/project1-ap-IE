@@ -1,57 +1,39 @@
-from typing import Callable
+from typing import Any, Callable, Generator, Self
 import unicurses as curses
 
-stdscr = None
 
+class CLI:
+    def __init__(self):
+        self.stdscr = curses.initscr()
+        self._gen = self._generator()
+        next(self._gen)
 
-def curses_setup():
-    global stdscr
-    stdscr = curses.initscr()
-    curses.noecho()
-    curses.cbreak()
-    curses.keypad(stdscr, True)
+    def __enter__(self) -> Self:
+        curses.noecho()
+        curses.cbreak()
+        curses.keypad(self.stdscr, True)
+        return self
 
+    def __exit__(self, exc_type, exc_value, traceback) -> bool:
+        global stdscr
+        curses.echo()
+        curses.nocbreak()
+        curses.keypad(self.stdscr, True)
+        return False
 
-def curses_cleanup():
-    curses.echo()
-    curses.nocbreak()
-    curses.keypad(stdscr, True)
+    def _generator(self) -> Generator[str, str, None]:
+        output: str | None = ""
+        while True:
+            curses.clear()
+            curses.addstr(output)
+            curses.refresh()
+            output = yield (curses.getkey() if output != "" else "")
 
+    def write_and_read(self, write: str) -> str:
+        self._gen.send(write)
+        return next(self._gen)
 
-class Command:
-    name: str
-    title: str
-
-    def __init__(self, name: str, title: str):
-        self.name = name
-        self.title = title
-
-    def __call__(self) -> None:
-        raise NotImplementedError
-
-
-class MenuCommand(Command):
-    subcommands: list[Command]
-
-    def __init__(self, name: str, title: str, subcommands: list[Command]):
-        super().__init__(name=name, title=title)
-        self.subcommands = subcommands
-
-    def __call__(self) -> None:
+    def close(self):
         curses.clear()
-        curses.addstr(stdscr, self.title)
-        curses.addstr(stdscr, "Select one of these options:")
-        for i, o in enumerate(self.subcommands):
-            curses.addstr(stdscr, f"{i}: {o.name}")
         curses.refresh()
-
-
-class ActionCommand(Command):
-    action: Callable[[], None]
-
-    def __init__(self, name: str, title: str, action: Callable[[], None]):
-        super().__init__(name, title)
-        self.action = action
-
-    def __call__(self) -> None:
-        self.action()
+        self._gen.throw(GeneratorExit())
