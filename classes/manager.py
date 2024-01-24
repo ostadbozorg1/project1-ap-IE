@@ -20,9 +20,10 @@ class Manager(User):
 
     __mapper_args__ = {
         "polymorphic_identity": "manager",
+
     }
 
-    def get_clinic_active_appointments(self, session) -> list[Appointment]:
+    def get_active_appointments(self, session) -> list[Appointment]:
         return [appointment for appointment in session.query(Appointment)
                 .filter(Appointment.clinic_id == self.clinic.id)]
 

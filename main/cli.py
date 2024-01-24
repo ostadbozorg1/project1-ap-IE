@@ -53,12 +53,29 @@ class CLI:
         return s
 
     def get_option(self, options: list[str]) -> int:
+        pages: list[list[str]] = []
+        page = 0
+        i = -1
+        for i in range(len(options)//7):
+            pages += [options[i*7:(i+1)*7]]
+        if len(options) % 7 != 0:
+            pages += [options[(i+1)*7:]]
         while True:
             result = self.write_and_read(
-                write="Select one of these options: \n"+"\n".join([f"{i+1} :{o}" for i, o in enumerate(options)]), single_char=True)
+                write="Select one of these options: \n"
+                + "\n".join([f"{i+1} :{o}" for i, o in enumerate(
+                    pages[page]
+                    + (["previous page"] if page != 0 else [])
+                    + (["next page"] if page != len(pages)-1 else []))])
+                + "\n0: back", single_char=True)
             if result.isdecimal():
-                if int(result) <= len(options):
-                    return int(result) - 1
+                if (option := int(result)) <= len(options):
+                    if option == 8:
+                        page -= 1
+                    elif option == 9:
+                        page += 1
+                    else:
+                        return page*7 + option - 1
             self.set_title("INVALID INPUT")
 
     def set_title(self, title: str):
