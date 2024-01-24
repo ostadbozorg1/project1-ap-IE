@@ -2,7 +2,7 @@
 name = "haji"
 version = "0.1.0"
 description = "description"
-authors = ["maf313,ostadbozorg,amir hossein nabavi <maf3.1185@gmail.com <others not found!>>"]
+authors = ["Kil'jaeden <lordtgm@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
