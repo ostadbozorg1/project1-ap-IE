@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "haji"
+version = "0.1.0"
+description = "description"
+authors = ["maf313,ostadbozorg,amir hossein nabavi <maf3.1185@gmail.com <others not found!>>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+setuptools = "^69.0.3"
+Flask = "^3.0.0"
+fuzzywuzzy = "^0.18.0"
+requests = "2.31.0"
+SQLAlchemy = "^2.0.25"
+Uni-Curses = "^2.1.3"
+python-Levenshtein = "^0.23.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
